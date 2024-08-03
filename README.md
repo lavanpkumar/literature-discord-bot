@@ -6,3 +6,5 @@
 <p>Javascript</p>
 <p>discordjs</p>
 <p>cheerio (nodejs)</p>
+<h2>Link</h2>
+https://discord.com/oauth2/authorize?client_id=1259383958349811742&integration_type=0&scope=applications.commands
