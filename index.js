@@ -1,7 +1,7 @@
 const { Client, Events, GatewayIntentBits } = require('discord.js')
 const { token } = require('./config.json')
 const cheerio = require('cheerio')
-
+//const userRatings = new Map()
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent]})
 
@@ -16,23 +16,45 @@ client.on('error', error => {
 });
 
 client.on("messageCreate", (message) => {
-try {
-    if (message.content.startsWith('!book')) {
-        bookSummary(message)
-    }
-    if (message.content.startsWith('!rate')) {
-        rate(message)
-    }
+    try {
+        if (message.content.startsWith('!book')) {
+            bookSummary(message)
+        }
+        if (message.content.startsWith('!rate')) {
+            rate(message)
+        }
 } catch (error) {
     console.error('Error handling message: ', error);
     message.reply("Sorry, an error occurred while searching for the book.");
 }
 });
 
-
+/*
 const rate = async (message) => {
+    const query = message.content.slice(6);
+    const search = await fetch(`https://www.goodreads.com/search?utf8=%E2%9C%93&query=${encodeURIComponent(query)}`);
+    const searchText = await search.text();
+
+    const $ = cheerio.load(searchText);
+    const firstResult = $('.bookTitle').first().attr('href');
+
+    if (firstResult) {
+        const bookInfo = await fetch(`https://www.goodreads.com${firstResult}`);
+        const bookInfoText = await bookInfo.text();
+
+        const $$ = cheerio.load(bookInfoText);
+        
+        const bookTitle = $$('h1[data-testid="bookTitle"]').text().trim();
+        const goodreadsRating = $$('.RatingStatistics__rating').text().trim()
+
+        if (!userRatings.has(bookTitle)) {
+            userRatings.set(bookTitle, 0.0)
+        }
+        message.reply(`Goodreads Rating: ${goodreadsRating}\nYour Rating is: ${userRatings.get(bookTitle)}`)
     
+    }    
 }
+*/
 
 const bookSummary = async (message) => {
     const query = message.content.slice(6);
